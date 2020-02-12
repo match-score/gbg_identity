@@ -1,7 +1,7 @@
 FORMAT: 1A
 HOST: https://polls.apiblueprint.org/
 
-# gbg_identity
+# GBG Identity API's
 Integrate with GBG quickly with mocked data.
 
 ## AuthenticationService [/authenticate/v1/connect/token]
@@ -9,43 +9,39 @@ Calls for using GBG Authorisation services in conjunction with your SSO service.
 
 ### Get Token [GET]
 This service will accept the authorisation code from your SSO provider and exchange it for a GBG access token
-
+    
 + Request (application/x-www-form-urlencoded)
-
+            
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+            "client_id": "Included for completeness, may be used in future for a second factor authentication. Should be set to 'ro.client'",
+            "grant_type": "Use the custom grant type 'id_auth'",
+            "client_secret": "Included for completeness, may be used in future for a second factor authentication. Should be set to 'secret'.",
+            "scope": "One or more registered scopes as a space separated list. If not specified, a token for all explicitly allowed scopes will be issued.",
+            "id_token": "a JSON web token that has been obtained from an external authentication provider"
         }
-
 
 + Response 200 (application/json)
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
+        {
+            "access_token": "9CMEo0Ty1QQmNibTNzc05KbnQ2OVJxbDdORi1vTVUiLCJ0eXAiOiJKV1QifQ.eyJuYmYiOjE1ODE1NDY",
+            "expires_in": 3600,
+            "token_type": "Bearer"
+        }
+        
++ Response 400 (application/json)
+
+        {
+            "error": [
+                "unsupported_grant_type",
+                "invalid_client"
+            ]
+        }   
+
++ Response 500 (application/json)
+    
+        {
+            "error": "server_error"
+        }
 
 ### Create a New Question [POST]
 
